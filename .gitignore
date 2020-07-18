@@ -1,0 +1,8 @@
+### dotenv ###
+.env
+
+### node ###
+node_modules/
+
+### dist-server ###
+dist-server/
