@@ -6,7 +6,7 @@ var router = Router();
 /* GET all. */
 router.get('/', ctrl.getAll);
 
-router.get('/:filter', (req, res) => ctrl.getFilteredMovies);
+router.get('/:filter', ctrl.getFilteredMovies);
 
 
 export default router;
