@@ -1,4 +1,4 @@
-function buildGetAllResponse(peliculas){
+function buildGetMoviesResponse(peliculas){
     const data = {
         peliculas: peliculas,
         total: peliculas.length
@@ -6,4 +6,4 @@ function buildGetAllResponse(peliculas){
     return data;
 }
 
-export default {buildGetAllResponse};
+export default {buildGetMoviesResponse};
