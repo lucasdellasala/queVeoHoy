@@ -51,8 +51,22 @@ const buildQuery = (req) => {
         } else {
             editedQuery = editedQuery + " WHERE genero_id = ?" 
         }
-    }; 
+    };
 
+    if(req.columna_orden == "titulo"){
+        editedQuery = editedQuery + " ORDER BY titulo";
+    } else if (req.columna_orden == "anio") {
+        editedQuery = editedQuery + " ORDER BY anio";
+    } else if (req.columna_orden == "puntuacion"){
+        editedQuery = editedQuery + " ORDER BY puntuacion";
+    }
+   
+    if(req.tipo_orden == "ASC"){
+        editedQuery = editedQuery + " ASC"
+    } else if (req.tipo_orden == "DESC"){
+        editedQuery = editedQuery + " DESC"
+    }
+    
     query = editedQuery;
 
     return query;
