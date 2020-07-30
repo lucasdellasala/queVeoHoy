@@ -35,9 +35,12 @@ const buildRequest = (req) => {
 const buildQuery = (req) => {
     let query = "SELECT * FROM pelicula";
     let editedQuery = query;
+
+    //Año
     if(req.anio !== undefined){
         editedQuery = editedQuery + " WHERE anio = ?"
     };
+    //Titulo
     if(req.titulo !== undefined){
         if(editedQuery !== query){
             editedQuery = editedQuery + " AND titulo LIKE ?"
@@ -45,6 +48,7 @@ const buildQuery = (req) => {
             editedQuery = editedQuery + " WHERE titulo LIKE ?" 
         }
     };
+    //Genero
     if(req.genero !== undefined){
         if(editedQuery !== query){
             editedQuery = editedQuery + " AND genero_id = ?"
@@ -52,7 +56,7 @@ const buildQuery = (req) => {
             editedQuery = editedQuery + " WHERE genero_id = ?" 
         }
     };
-
+    //Orden
     if(req.columna_orden == "titulo"){
         editedQuery = editedQuery + " ORDER BY titulo";
     } else if (req.columna_orden == "anio") {
@@ -60,12 +64,14 @@ const buildQuery = (req) => {
     } else if (req.columna_orden == "puntuacion"){
         editedQuery = editedQuery + " ORDER BY puntuacion";
     }
-   
+    //ASC O DESC
     if(req.tipo_orden == "ASC"){
         editedQuery = editedQuery + " ASC"
     } else if (req.tipo_orden == "DESC"){
         editedQuery = editedQuery + " DESC"
     }
+    //LIMIT Y OFFSET
+    editedQuery = editedQuery + " LIMIT ? OFFSET ?";
     
     query = editedQuery;
 
@@ -86,6 +92,8 @@ const buildValues = (req) => {
     if(req.genero !== undefined){
         values.push(req.genero)
     };
+    values.push(parseInt(req.cantidad));
+    values.push(parseInt(req.pagina)-1);
 
     return values;
 };
@@ -95,7 +103,7 @@ const getMovies = (req) => {
     const query = buildQuery(request);
     const values = buildValues(request);
     console.log(values);
-
+    console.log(query);
     return new Promise((resolve, reject) => {
         conn.db.query(query, values, (err, results) => {
             if(err) return reject(err);
