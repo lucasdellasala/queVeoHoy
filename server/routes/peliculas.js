@@ -6,7 +6,7 @@ var router = Router();
 /* GET all. */
 router.get('/', ctrl.getAll);
 
-// /* GET by id. */
-// router.get('/:id', ctrl.getById);
+router.get('/:filter', (req, res) => ctrl.getFilteredMovies(req.params.filter));
+
 
 export default router;

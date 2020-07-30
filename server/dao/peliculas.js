@@ -1,7 +1,7 @@
 import conn from "../lib/connectiondb.js";
 import Pelicula from "../entities/Pelicula.js";
 
-const armarPelis = (resultados) => {
+const buildMovies = (resultados) => {
     var peliculas = resultados.map(function(e){
         return new Pelicula(
             e.id,
@@ -18,14 +18,30 @@ const armarPelis = (resultados) => {
 }
 
 const getAllMovies = () => {
-    const query = "SELECT * FROM pelicula LIMIT 30 OFFSET 0";
+    const query = "SELECT * FROM pelicula LIMIT 20 OFFSET 0";
     return new Promise((resolve, reject) => {
         conn.db.query(query, (err, results) => {
             if(err) return reject(err);
 
-            resolve(armarPelis(results));
+            resolve(buildMovies(results));
         });
     })
 };
 
-export default {getAllMovies};
+
+const getFilteredMovies = (req) => {
+   
+
+    const query = "SELECT * FROM pelicula LIMIT 20 OFFSET 0, WHERE anio = ?";
+
+   
+    // return new Promise((resolve, reject) => {
+    //     conn.db.query(query, (err, results) => {
+    //         if(err) return reject(err);
+
+    //         resolve(buildMovies(results));
+    //     });
+    // })
+};
+
+export default {getAllMovies, getFilteredMovies};

@@ -7,7 +7,13 @@ const getAll = () => {
         .catch((err) => {err});
 }
 
-export default {getAll};
+const getFilteredMovies = (req) => {
+    return dao.getAllMovies(req)
+        .then((results) => {return results})
+        .catch((err) => {err});    
+}
+
+export default {getAll, getFilteredMovies};
 
 
 
