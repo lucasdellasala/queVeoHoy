@@ -40,9 +40,9 @@ const buildQuery = (req) => {
     };
     if(req.titulo !== undefined){
         if(editedQuery !== query){
-            editedQuery = editedQuery + " AND titulo = ?"
+            editedQuery = editedQuery + " AND titulo LIKE ?"
         } else {
-            editedQuery = editedQuery + " WHERE titulo = ?" 
+            editedQuery = editedQuery + " WHERE titulo LIKE ?" 
         }
     };
     if(req.genero !== undefined){
@@ -52,6 +52,7 @@ const buildQuery = (req) => {
             editedQuery = editedQuery + " WHERE genero_id = ?" 
         }
     }; 
+
     query = editedQuery;
 
     return query;
@@ -64,11 +65,13 @@ const buildValues = (req) => {
         values.push(req.anio);
     };
     if(req.titulo !== undefined){
-        values.push(req.titulo);
+        let tit = req.titulo;
+        tit= "%"+tit+"%";
+        values.push(tit);
     };
     if(req.genero !== undefined){
         values.push(req.genero)
-    }; 
+    };
 
     return values;
 };
@@ -77,6 +80,7 @@ const getMovies = (req) => {
     let request = buildRequest(req);
     const query = buildQuery(request);
     const values = buildValues(request);
+    console.log(values);
 
     return new Promise((resolve, reject) => {
         conn.db.query(query, values, (err, results) => {
