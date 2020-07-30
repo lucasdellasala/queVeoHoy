@@ -10,13 +10,14 @@ const getAll = (req, res) => {
         .catch((err) => {throw err});
 }
 
-const getFilteredMovies = (req) => {
-    let anio = req.anio;
-    let titulo = req.titulo; 
-    let genero = req.genero; 
-    let columna = req.columna_orden; 
-    let pagina = req.pagina; 
-    let cantidad = req.cantidad;
+const getFilteredMovies = (req, res) => {
+    let anio = req.params.filter.anio;
+    let titulo = req.params.filter.titulo; 
+    let genero = req.params.filter.genero; 
+    let columna = req.params.filter.columna_orden; 
+    let pagina = req.params.filter.pagina; 
+    let cantidad = req.params.filter.cantidad;
+
     console.log("\n \n");
     console.log("Año:");
     console.log(anio);
