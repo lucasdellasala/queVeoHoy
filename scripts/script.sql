@@ -19,3 +19,24 @@ CREATE TABLE genero (
 
 ALTER TABLE pelicula 
 ADD COLUMN genero_id INT NOT NULL
+
+CREATE TABLE actor (
+    id INT NOT NULL auto_increment,
+    nombre VARCHAR(70) NOT NULL,
+    primary key (id)
+);
+
+CREATE TABLE actor_pelicula (
+    id INT NOT NULL auto_increment,
+    actor_id INT,
+    pelicula_id INT,
+    FOREIGN KEY (actor_id) REFERENCES actor(id),
+    FOREIGN KEY (pelicula_id) REFERENCES pelicula(id),
+    primary key (id)
+);
+
+
+SELECT pelicula.titulo, actor.nombre 
+FROM actor_pelicula 
+LEFT JOIN actor ON actor_id = actor.id 
+RIGHT JOIN pelicula ON pelicula_id = pelicula.id
