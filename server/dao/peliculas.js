@@ -92,8 +92,13 @@ const buildValues = (req) => {
     if(req.genero !== undefined){
         values.push(req.genero)
     };
-    values.push(parseInt(req.cantidad));
-    values.push(parseInt(req.pagina)-1);
+
+    const limit = 20;
+    const page = parseInt(req.pagina)
+    const offset = (limit*page)-limit;
+
+    values.push(limit);    
+    values.push(offset);
 
     return values;
 };
