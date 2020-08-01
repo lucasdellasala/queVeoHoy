@@ -4,8 +4,8 @@ import domain from '../domain/peliculas.js';
 const getMovies = (req, res) => {
     // Llama el service
     return service.getMovies(req)
-        .then((peliculas) => {
-            res.status(200).json(domain.buildGetMoviesResponse(peliculas));
+        .then((results) => {
+            res.status(200).json(domain.buildGetMoviesResponse(results));
         })
         .catch((err) => {throw err});
 }

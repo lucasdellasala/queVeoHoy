@@ -70,9 +70,7 @@ const buildQuery = (req) => {
     } else if (req.tipo_orden == "DESC"){
         editedQuery = editedQuery + " DESC"
     }
-    //LIMIT Y OFFSET
-    editedQuery = editedQuery + " LIMIT ? OFFSET ?";
-    
+        
     query = editedQuery;
 
     return query;
@@ -93,29 +91,30 @@ const buildValues = (req) => {
         values.push(req.genero)
     };
 
-    const limit = 20;
-    const page = parseInt(req.pagina)
-    const offset = (limit*page)-limit;
+    // const limit = 20;
+    // const page = parseInt(req.pagina)
+    // const offset = (limit*page)-limit;
 
-    values.push(limit);    
-    values.push(offset);
+    // values.push(limit);    
+    // values.push(offset);
 
     return values;
 };
 
 const getMovies = (req) => {
-    let request = buildRequest(req);
+    const request = buildRequest(req);
+
     const query = buildQuery(request);
     const values = buildValues(request);
-    console.log(values);
-    console.log(query);
-    return new Promise((resolve, reject) => {
+
+    const promise = new Promise((resolve, reject) => {
         conn.db.query(query, values, (err, results) => {
             if(err) return reject(err);
-
             resolve(buildMovies(results));
         });
-    })
+    });
+
+    return promise
 };
 
-export default {getMovies};
+export default {getMovies, buildRequest};
