@@ -1,0 +1,6 @@
+La paginación funciona bien, no se ve reflejado en el front ya que en la línea 597 y 598 del archivo css/style.css 
+".grid-pager .boton-pagina:first-child,
+.grid-pager .boton-pagina.active {"
+
+la clase active se agrega solo al primer botón y luego la clase "active" no se agrega en la lógica del front en ningún momento
+al botón de la página que uno clickea.

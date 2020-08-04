@@ -1,14 +1,12 @@
 import dao from '../dao/peliculas.js';
 
 
-const getMovies = (req) => {
+const getMovies = (req, limit, offset) => {
+    let promises = dao.getMovies(req, limit, offset);
 
-    return dao.getMovies(req)
+    return Promise.all(promises)
         .then((results) => {
-            const request = dao.buildRequest(req);
-            const page = request.pagina;
-            const limit = request.cantidad;
-            return [results, page, limit]
+            return {movies: results[0], total: results[1][0]["COUNT(*)"]}
         })
         .catch((err) => {err});
 }

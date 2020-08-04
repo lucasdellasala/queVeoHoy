@@ -1,23 +1,6 @@
 import conn from "../lib/connectiondb.js";
-import Pelicula from "../entities/Pelicula.js";
 import Request from "../entities/Request.js";
 
-
-const buildMovies = (resultados) => {
-    let peliculas = resultados.map(function(e){
-        return new Pelicula(
-            e.id,
-            e.titulo,
-            e.duracion,
-            e.director,
-            e.anio,
-            e.fecha_lanzamiento,
-            e.puntuacion,
-            e.poster,
-            e.trama);
-    });
-    return peliculas;
-}
 
 const buildRequest = (req) => {
     let request = new Request(
@@ -29,49 +12,81 @@ const buildRequest = (req) => {
         req.query.pagina, 
         req.query.cantidad
     );
+
     return request;
 }
 
-const buildQuery = (req) => {
+const buildQueryMovies = (req) => {
     let query = "SELECT * FROM pelicula";
-    let editedQuery = query;
+    let editedQuery = false;
 
     //Año
     if(req.anio !== undefined){
-        editedQuery = editedQuery + " WHERE anio = ?"
+        query = query + " WHERE anio = ?";
+        editedQuery = true;
     };
     //Titulo
     if(req.titulo !== undefined){
-        if(editedQuery !== query){
-            editedQuery = editedQuery + " AND titulo LIKE ?"
+        if(editedQuery == true){
+            query = query + " AND titulo LIKE ?";
         } else {
-            editedQuery = editedQuery + " WHERE titulo LIKE ?" 
+            query = query + " WHERE titulo LIKE ?";
+            editedQuery = true;
         }
     };
     //Genero
     if(req.genero !== undefined){
-        if(editedQuery !== query){
-            editedQuery = editedQuery + " AND genero_id = ?"
+        if(editedQuery == true){
+            query = query + " AND genero_id = ?";
         } else {
-            editedQuery = editedQuery + " WHERE genero_id = ?" 
+            query = query + " WHERE genero_id = ?";
+            editedQuery = true;
         }
     };
     //Orden
-    if(req.columna_orden == "titulo"){
-        editedQuery = editedQuery + " ORDER BY titulo";
-    } else if (req.columna_orden == "anio") {
-        editedQuery = editedQuery + " ORDER BY anio";
-    } else if (req.columna_orden == "puntuacion"){
-        editedQuery = editedQuery + " ORDER BY puntuacion";
-    }
+    query = query + " ORDER BY "+req.columna_orden;
+
     //ASC O DESC
-    if(req.tipo_orden == "ASC"){
-        editedQuery = editedQuery + " ASC"
-    } else if (req.tipo_orden == "DESC"){
-        editedQuery = editedQuery + " DESC"
-    }
+    query = query+" "+req.tipo_orden;
         
-    query = editedQuery;
+    //LIMIT Y OFFSET    
+    query = query + " LIMIT ? OFFSET ?"
+
+    return query;
+};
+
+const buildQueryCount = (req) => {
+    let query = "SELECT COUNT(*) FROM pelicula";
+    let editedQuery = false;
+
+    //Año
+    if(req.anio !== undefined){
+        query = query + " WHERE anio = ?";
+        editedQuery = true;
+    };
+    //Titulo
+    if(req.titulo !== undefined){
+        if(editedQuery == true){
+            query = query + " AND titulo LIKE ?";
+        } else {
+            query = query + " WHERE titulo LIKE ?";
+            editedQuery = true;
+        }
+    };
+    //Genero
+    if(req.genero !== undefined){
+        if(editedQuery == true){
+            query = query + " AND genero_id = ?";
+        } else {
+            query = query + " WHERE genero_id = ?";
+            editedQuery = true;
+        }
+    };
+    //Orden
+    query = query+" ORDER BY "+req.columna_orden;
+    
+    //ASC O DESC
+    query = query+" "+req.tipo_orden;
 
     return query;
 };
@@ -91,30 +106,35 @@ const buildValues = (req) => {
         values.push(req.genero)
     };
 
-    // const limit = 20;
-    // const page = parseInt(req.pagina)
-    // const offset = (limit*page)-limit;
-
-    // values.push(limit);    
-    // values.push(offset);
-
     return values;
 };
 
-const getMovies = (req) => {
+const getMovies = (req, limit, offset) => {
+
     const request = buildRequest(req);
 
-    const query = buildQuery(request);
-    const values = buildValues(request);
+    const queryMovies = buildQueryMovies(request);
+    const queryCount = buildQueryCount(request);
 
-    const promise = new Promise((resolve, reject) => {
-        conn.db.query(query, values, (err, results) => {
+    const valuesCount = buildValues(request);
+    let values = buildValues(request);
+ 
+    values.push(limit);
+    values.push(offset);
+
+    const promiseMovies = new Promise((resolve, reject) => {
+        conn.db.query(queryMovies, values, (err, results) => {
             if(err) return reject(err);
-            resolve(buildMovies(results));
+            resolve(results);
         });
     });
-
-    return promise
+    const promiseCount = new Promise((resolve, reject) => {
+        conn.db.query(queryCount, valuesCount, (err, results) => {
+            if(err) return reject(err);
+            resolve(results);
+        });
+    });
+    return [promiseMovies, promiseCount];
 };
 
-export default {getMovies, buildRequest};
+export default {getMovies};
