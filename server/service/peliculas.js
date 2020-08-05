@@ -1,6 +1,5 @@
 import dao from '../dao/peliculas.js';
 
-
 const getMovies = (req, limit, offset) => {
     let promises = dao.getMovies(req, limit, offset);
 
@@ -11,7 +10,17 @@ const getMovies = (req, limit, offset) => {
         .catch((err) => {err});
 }
 
-export default {getMovies};
+const getById = (req) => {
+    let promises = dao.getById(req);
+
+    return Promise.all(promises)
+        .then((results) => {
+            return {movie: results[0], actors: results[1], genre: results[2][0].nombre}
+        })
+        .catch((err) => {err});
+}
+
+export default {getMovies, getById};
 
 
 

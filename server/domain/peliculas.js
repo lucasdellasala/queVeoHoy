@@ -16,7 +16,7 @@ const buildMovies = (results) => {
     return peliculas;
 }
 
-function buildGetMoviesResponse(results){
+const buildGetMoviesResponse = (results) => {
 
     const data = {
         peliculas: buildMovies(results.movies),
@@ -26,4 +26,15 @@ function buildGetMoviesResponse(results){
     return data;
 }
 
-export default {buildGetMoviesResponse};
+const buildGetByIdResponse = (movie, actors, genre) => {
+
+    const data = {
+        pelicula: movie,
+        actores: actors,
+        genero: genre
+    };
+
+    return data;
+}
+
+export default {buildGetMoviesResponse, buildGetByIdResponse};

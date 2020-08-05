@@ -1,6 +1,7 @@
 import conn from "../lib/connectiondb.js";
 import Request from "../entities/Request.js";
 
+// Funciones internas //
 
 const buildRequest = (req) => {
     let request = new Request(
@@ -109,6 +110,8 @@ const buildValues = (req) => {
     return values;
 };
 
+// Funciones exportadas //
+
 const getMovies = (req, limit, offset) => {
 
     const request = buildRequest(req);
@@ -137,4 +140,31 @@ const getMovies = (req, limit, offset) => {
     return [promiseMovies, promiseCount];
 };
 
-export default {getMovies};
+const getById = (req) => {
+
+    const queryMovie = "SELECT * FROM pelicula WHERE id = "+req;
+    const queryActors = "SELECT nombre FROM actor JOIN actor_pelicula ON actor.id = actor_id WHERE actor_pelicula.pelicula_id = "+req;
+    const queryGenre = "SELECT nombre FROM genero JOIN pelicula ON genero.id = genero_id WHERE pelicula.id = "+ req;
+
+    const promiseMovie = new Promise((resolve, reject) => {
+        conn.db.query(queryMovie, (err, results) => {
+            if(err) return reject(err);
+            resolve(results[0]);
+        });
+    });
+    const promiseActors = new Promise((resolve, reject) => {
+        conn.db.query(queryActors, (err, results) => {
+            if(err) return reject(err);
+            resolve(results);
+        });
+    });
+    const promiseGenre = new Promise((resolve, reject) => {
+        conn.db.query(queryGenre, (err, results) => {
+            if(err) return reject(err);
+            resolve(results);
+        });
+    });
+    return [promiseMovie, promiseActors, promiseGenre];
+};
+
+export default {getMovies, getById};

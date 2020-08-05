@@ -36,6 +36,11 @@ CREATE TABLE actor_pelicula (
 );
 
 
+SELECT nombre
+FROM actor
+JOIN actor_pelicula ON actor.id = actor_id
+WHERE actor_pelicula.pelicula_id = 1
+
 SELECT pelicula.titulo, actor.nombre 
 FROM actor_pelicula 
 LEFT JOIN actor ON actor_id = actor.id 
