@@ -45,3 +45,5 @@ SELECT pelicula.titulo, actor.nombre
 FROM actor_pelicula 
 LEFT JOIN actor ON actor_id = actor.id 
 RIGHT JOIN pelicula ON pelicula_id = pelicula.id
+
+SELECT * FROM pelicula WHERE genero_id = 1 AND puntuacion >= 7 AND anio between 1900 and 2005
