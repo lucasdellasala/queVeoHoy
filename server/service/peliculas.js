@@ -21,11 +21,8 @@ const getById = (req) => {
 }
 
 const getRecom = (req) => {
-    console.log("SERVICE");
 
-    let promises = dao.getRecom(req);
-
-    return Promise.all(promises)
+    return dao.getRecom(req)
         .then((results) => {
             return {results}
         })

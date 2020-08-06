@@ -14,7 +14,7 @@ const buildMovies = (results) => {
             e.trama);
     });
     return peliculas;
-}
+};
 
 const buildGetMoviesResponse = (results) => {
 
@@ -24,7 +24,7 @@ const buildGetMoviesResponse = (results) => {
     };
 
     return data;
-}
+};
 
 const buildGetByIdResponse = (movie, actors, genre) => {
 
@@ -35,6 +35,16 @@ const buildGetByIdResponse = (movie, actors, genre) => {
     };
 
     return data;
-}
+};
 
-export default {buildGetMoviesResponse, buildGetByIdResponse};
+const buildGetRecomResponse = (results) => {
+    
+    const data = {
+        peliculas: results.results,
+    };
+
+    return data;
+};
+
+
+export default {buildGetMoviesResponse, buildGetByIdResponse, buildGetRecomResponse};

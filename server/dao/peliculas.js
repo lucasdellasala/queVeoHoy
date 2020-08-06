@@ -51,8 +51,6 @@ const buildRequestGetRecomendacion = (req) => {
             break;
     }
 
-    console.log(request.genero);
-
     return request;
 }
 
@@ -127,6 +125,37 @@ const buildQueryCount = (req) => {
     
     //ASC O DESC
     query = query+" "+req.tipo_orden;
+
+    return query;
+};
+
+const buildQueryRecom = (req) => {
+    
+    let query = "SELECT * FROM pelicula";
+    let editedQuery = false;
+
+    if (req.genero !== null){
+        query = query + " WHERE genero_id = "+req.genero;
+        editedQuery = true;
+    };
+
+    if (req.puntuacion !== undefined){
+        if (editedQuery == true) {
+            query = query + " AND puntuacion >= "+req.puntuacion
+        } else {
+            query = query + " WHERE puntuacion >= "+req.puntuacion;
+            editedQuery = true;
+        }
+    };
+
+    if (req.anio_inicio !== undefined && req.anio_inicio !== undefined) {
+        if (editedQuery == true) {
+            query = query + " AND anio BETWEEN "+req.anio_inicio+" AND "+req.anio_fin;
+        } else {
+            query = query + " WHERE anio BETWEEN "+req.anio_inicio+" AND "+req.anio_fin;
+            editedQuery = true;
+        }
+    }; 
 
     return query;
 };
@@ -207,32 +236,21 @@ const getById = (req) => {
 };
 
 const getRecom = (req) => {
-
-    console.log("DAO");
-
     //Transformo en objeto la req
     const request = buildRequestGetRecomendacion(req);
 
-    console.log("El genero que devuelve es: "+request.genero);
     //Armo las querys
-
-    //Armo los valores para las querys
+    const query = buildQueryRecom(request);
 
     //Hago las consultas
-    // const promiseMovies = new Promise((resolve, reject) => {
-    //     conn.db.query(queryMovies, values, (err, results) => {
-    //         if(err) return reject(err);
-    //         resolve(results);
-    //     });
-    // });
-    // const promiseCount = new Promise((resolve, reject) => {
-    //     conn.db.query(queryCount, valuesCount, (err, results) => {
-    //         if(err) return reject(err);
-    //         resolve(results);
-    //     });
-    // });
-    // return [promiseMovies, promiseCount];
-    return request.genero
+    const promiseRecom = new Promise((resolve, reject) => {
+        conn.db.query(query, (err, results) => {
+            if(err) return reject(err);
+            resolve(results);
+        });
+    });
+    
+    return promiseRecom;
 };
 
 export default {getMovies, getById, getRecom};
