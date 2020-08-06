@@ -28,6 +28,7 @@ conn.db.connect(function(err){
 
 // Routes
 app.use("/peliculas", peliculasRouter);
-app.use("/generos", generosRouter)
+app.use("/generos", generosRouter);
+
 
 export default app;

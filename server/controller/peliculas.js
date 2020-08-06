@@ -1,5 +1,6 @@
 import service from '../service/peliculas.js';
 import domain from '../domain/peliculas.js';
+import entities from '../entities/Request.js'
 
 const getMovies = (req, res) => {
     // Validación
@@ -26,11 +27,9 @@ const getById = (req, res) => {
     return service.getById(req)
         .then((results) => {
             if (results){
-                console.log("se metio al if");
                 const data = domain.buildGetByIdResponse(results.movie, results.actors, results.genre);
                 res.status(200).json(data);
             } else {
-                console.log("se metio al else");
                 new Error("Ooops");
                 res.status(404).json();
             }
@@ -38,4 +37,58 @@ const getById = (req, res) => {
         .catch((err) => {throw err});
 }
 
-export default {getMovies, getById};
+const getRecom = (req, res) => {
+    console.log("CONTROLLER");
+
+    const buildRequestGetRecomendacion = (req) => {
+        let request = new entities.RequestGetRecomendacion(
+            req.query.genero,
+            req.query.anio_inicio, 
+            req.query.anio_fin, 
+            req.query.puntuacion
+        );
+    
+        switch (request.genero) {
+            case "Action": 
+                request.genero = 1;
+                break;
+            case "Adventure": 
+                request.genero = 2;
+                break;
+            case "Animation": 
+                request.genero = 3;
+                break;
+            case "Biography": 
+                request.genero = 4;
+                break;
+            case "Comedy": 
+                request.genero = 5;
+                break;
+            case "Drama": 
+                request.genero = 8;
+                break;
+            case "Horror": 
+                request.genero = 10;
+                break;
+            default:
+                request.genero = null;
+                break;
+        }
+    
+        console.log(request.genero);
+    
+        return request;
+    }
+
+    const request = buildRequestGetRecomendacion(req);
+    console.log("El genero que devuelve es:" +request.genero);
+    
+    return service.getRecom(req)
+        .then((results) => {
+            //res.status(200).json(domain.buildGetRecomendacionResponse(results));
+            res.status(200).json({genero : results})
+        })
+        .catch((err) => {throw err});
+}
+
+export default {getMovies, getById, getRecom};

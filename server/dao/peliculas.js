@@ -1,10 +1,10 @@
 import conn from "../lib/connectiondb.js";
-import Request from "../entities/Request.js";
+import entities from "../entities/Request.js";
 
 // Funciones internas //
 
-const buildRequest = (req) => {
-    let request = new Request(
+const buildRequestGetAll = (req) => {
+    let request = new entities.RequestGetAll(
         req.query.anio,
         req.query.titulo, 
         req.query.genero, 
@@ -13,6 +13,45 @@ const buildRequest = (req) => {
         req.query.pagina, 
         req.query.cantidad
     );
+
+    return request;
+}
+const buildRequestGetRecomendacion = (req) => {
+    let request = new entities.RequestGetRecomendacion(
+        req.query.genero,
+        req.query.anio_inicio, 
+        req.query.anio_fin, 
+        req.query.puntuacion
+    );
+
+    switch (request.genero) {
+        case "Action": 
+            request.genero = 1;
+            break;
+        case "Adventure": 
+            request.genero = 2;
+            break;
+        case "Animation": 
+            request.genero = 3;
+            break;
+        case "Biography": 
+            request.genero = 4;
+            break;
+        case "Comedy": 
+            request.genero = 5;
+            break;
+        case "Drama": 
+            request.genero = 8;
+            break;
+        case "Horror": 
+            request.genero = 10;
+            break;
+        default:
+            request.genero = null;
+            break;
+    }
+
+    console.log(request.genero);
 
     return request;
 }
@@ -114,7 +153,7 @@ const buildValues = (req) => {
 
 const getMovies = (req, limit, offset) => {
 
-    const request = buildRequest(req);
+    const request = buildRequestGetAll(req);
 
     const queryMovies = buildQueryMovies(request);
     const queryCount = buildQueryCount(request);
@@ -167,4 +206,33 @@ const getById = (req) => {
     return [promiseMovie, promiseActors, promiseGenre];
 };
 
-export default {getMovies, getById};
+const getRecom = (req) => {
+
+    console.log("DAO");
+
+    //Transformo en objeto la req
+    const request = buildRequestGetRecomendacion(req);
+
+    console.log("El genero que devuelve es: "+request.genero);
+    //Armo las querys
+
+    //Armo los valores para las querys
+
+    //Hago las consultas
+    // const promiseMovies = new Promise((resolve, reject) => {
+    //     conn.db.query(queryMovies, values, (err, results) => {
+    //         if(err) return reject(err);
+    //         resolve(results);
+    //     });
+    // });
+    // const promiseCount = new Promise((resolve, reject) => {
+    //     conn.db.query(queryCount, valuesCount, (err, results) => {
+    //         if(err) return reject(err);
+    //         resolve(results);
+    //     });
+    // });
+    // return [promiseMovies, promiseCount];
+    return request.genero
+};
+
+export default {getMovies, getById, getRecom};

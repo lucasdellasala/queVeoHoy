@@ -1,0 +1,1 @@
+No estaría pudiendo acceder a la ruta /peliculas/recomendaciones, ni siquiera me deja levantar un console.log.

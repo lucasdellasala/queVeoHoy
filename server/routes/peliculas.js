@@ -12,4 +12,9 @@ router.get('/:id', (req, res)=>{
     ctrl.getById(id, res);
 });
 
+router.get('/recomendacion', (req, res) => {
+    console.log("ROUTES");
+    ctrl.getRecom(req, res)
+});
+
 export default router;

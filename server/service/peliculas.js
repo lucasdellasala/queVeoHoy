@@ -20,7 +20,19 @@ const getById = (req) => {
         .catch((err) => {err});
 }
 
-export default {getMovies, getById};
+const getRecom = (req) => {
+    console.log("SERVICE");
+
+    let promises = dao.getRecom(req);
+
+    return Promise.all(promises)
+        .then((results) => {
+            return {results}
+        })
+        .catch((err) => {err});
+}
+
+export default {getMovies, getById, getRecom};
 
 
 
